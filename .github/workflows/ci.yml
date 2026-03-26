@@ -35,7 +35,13 @@ jobs:
         run: chmod +x install.sh
 
       - name: Create fake project directory
-        run: mkdir -p /tmp/test-project && cd /tmp/test-project && git init && git commit --allow-empty -m "init"
+        run: |
+          mkdir -p /tmp/test-project
+          cd /tmp/test-project
+          git init
+          git config user.email "ci@example.com"
+          git config user.name "CI"
+          git commit --allow-empty -m "init"
 
       - name: Run global install
         run: bash install.sh --global-only
