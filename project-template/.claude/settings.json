@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "bash .claude/hooks/session-start.sh"
+      }
+    ],
+    "PreCompact": [
+      {
+        "type": "command",
+        "command": "bash .claude/hooks/pre-compact.sh"
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "node .claude/hooks/context-monitor.mjs"
+  },
+  "env": {
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "80"
+  },
+  "compactInstructions": "Preserve: current phase goals, all architectural decisions in MEMORY.md, list of files modified, blocker list, next actions. Discard: debugging output, failed attempts, verbose tool call logs, repeated explanations."
+}

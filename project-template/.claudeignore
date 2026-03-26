@@ -1,0 +1,116 @@
+# .claudeignore
+# Files Claude should never read or index.
+# Same syntax as .gitignore.
+# Keeps the context window clean and prevents token waste on irrelevant content.
+
+# ── Package managers / dependencies ──────────────────────────────────────────
+node_modules/
+.pnp/
+.pnp.js
+vendor/                 # PHP, Go
+.venv/                  # Python
+venv/
+env/
+.env/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+build/
+out/
+target/                 # Rust, Java
+*.class
+*.jar
+
+# ── Framework-specific build dirs ─────────────────────────────────────────────
+.next/
+.nuxt/
+.output/
+.svelte-kit/
+.solid/
+
+# ── Infrastructure / deployment ───────────────────────────────────────────────
+.vercel/
+.netlify/
+.serverless/
+cdk.out/
+.terraform/
+
+# ── Database files ────────────────────────────────────────────────────────────
+*.sqlite
+*.db
+*.db-shm
+*.db-wal
+
+# ── Lock files (read package.json / pyproject.toml instead) ──────────────────
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+Cargo.lock
+poetry.lock
+Pipfile.lock
+composer.lock
+go.sum
+
+# ── Test coverage ─────────────────────────────────────────────────────────────
+coverage/
+.nyc_output/
+htmlcov/
+*.lcov
+.pytest_cache/
+
+# ── IDE / OS ──────────────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+Thumbs.db
+desktop.ini
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+
+# ── Generated / minified ──────────────────────────────────────────────────────
+*.min.js
+*.min.css
+*.map
+
+# ── Media (Claude cannot use these) ──────────────────────────────────────────
+*.mp4
+*.mp3
+*.wav
+*.avi
+*.mov
+*.webm
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.ico
+*.webp
+*.svg
+*.ttf
+*.woff
+*.woff2
+*.eot
+
+# ── Secrets — never expose ────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*_rsa
+*_rsa.pub
+
+# ── claude-session-master internal ────────────────────────────────────────────
+.claude/compact-backups/

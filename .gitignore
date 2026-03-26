@@ -1,0 +1,18 @@
+# claude-session-master repo .gitignore
+# Note: this is the REPO's gitignore, not the .claudeignore template
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Test artifacts
+/tmp/
+*.log
+
+# Node (if any tooling is added later)
+node_modules/

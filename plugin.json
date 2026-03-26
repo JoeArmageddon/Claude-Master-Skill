@@ -1,0 +1,116 @@
+{
+  "name": "claude-session-master",
+  "version": "1.0.0",
+  "description": "Session orchestration for Claude Code. Persistent memory, phase-gated reflection, lazy skill routing, MCP management, and web intelligence — triggered by /start-session.",
+  "author": "claude-session-master contributors",
+  "license": "MIT",
+  "homepage": "https://github.com/JoeArmageddon/Claude-Master-Skill",
+  "repository": "https://github.com/JoeArmageddon/Claude-Master-Skill",
+  "keywords": [
+    "session",
+    "memory",
+    "workflow",
+    "phases",
+    "mcp",
+    "token-optimization",
+    "productivity"
+  ],
+  "engines": {
+    "claude-code": ">=1.0.0"
+  },
+  "skills": [
+    {
+      "name": "master-session",
+      "path": "global/skills/master-session/SKILL.md",
+      "scope": "global"
+    },
+    {
+      "name": "skill-authoring",
+      "path": "global/skills/skill-authoring/SKILL.md",
+      "scope": "global"
+    }
+  ],
+  "commands": [
+    {
+      "name": "start-session",
+      "path": "project-template/.claude/commands/start-session.md",
+      "scope": "project",
+      "description": "Initialise a session with full context, memory, and skill routing"
+    },
+    {
+      "name": "end-phase",
+      "path": "project-template/.claude/commands/end-phase.md",
+      "scope": "project",
+      "description": "Run phase reflection, update memory files, and compact context"
+    },
+    {
+      "name": "checkpoint",
+      "path": "project-template/.claude/commands/checkpoint.md",
+      "scope": "project",
+      "description": "Save a lightweight mid-session checkpoint"
+    },
+    {
+      "name": "add-mcp",
+      "path": "project-template/.claude/commands/add-mcp.md",
+      "scope": "project",
+      "description": "Add a project-scoped MCP server"
+    },
+    {
+      "name": "remove-mcp",
+      "path": "project-template/.claude/commands/remove-mcp.md",
+      "scope": "project",
+      "description": "Remove a project-scoped MCP server"
+    },
+    {
+      "name": "research",
+      "path": "project-template/.claude/commands/research.md",
+      "scope": "project",
+      "description": "Run a web intelligence sweep on any topic"
+    },
+    {
+      "name": "new-skill",
+      "path": "project-template/.claude/commands/new-skill.md",
+      "scope": "project",
+      "description": "Interactively create and install a new skill"
+    }
+  ],
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "path": "project-template/.claude/hooks/session-start.sh",
+      "scope": "project"
+    },
+    {
+      "event": "PreCompact",
+      "path": "project-template/.claude/hooks/pre-compact.sh",
+      "scope": "project"
+    }
+  ],
+  "files": [
+    {
+      "src": "project-template/PHASES.md",
+      "dest": "PHASES.md",
+      "overwrite": false
+    },
+    {
+      "src": "project-template/SESSION_LOG.md",
+      "dest": "SESSION_LOG.md",
+      "overwrite": false
+    },
+    {
+      "src": "project-template/MEMORY.md",
+      "dest": "MEMORY.md",
+      "overwrite": false
+    },
+    {
+      "src": "project-template/.claudeignore",
+      "dest": ".claudeignore",
+      "overwrite": false
+    },
+    {
+      "src": "project-template/.claude/settings.json",
+      "dest": ".claude/settings.json",
+      "overwrite": false
+    }
+  ]
+}

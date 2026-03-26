@@ -1,0 +1,94 @@
+name: Install script
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - install.sh
+      - project-template/**
+      - global/**
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-install:
+    name: Test on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Make install.sh executable
+        run: chmod +x install.sh
+
+      - name: Create fake project directory
+        run: mkdir -p /tmp/test-project && cd /tmp/test-project && git init && git commit --allow-empty -m "init"
+
+      - name: Run global install
+        run: bash install.sh --global-only
+
+      - name: Verify global files
+        run: |
+          test -f ~/.claude/skills/master-session/SKILL.md   || (echo "MISSING: master-session SKILL.md" && exit 1)
+          test -f ~/.claude/skills/skill-authoring/SKILL.md  || (echo "MISSING: skill-authoring SKILL.md" && exit 1)
+          test -f ~/.claude/CLAUDE.md                        || (echo "MISSING: global CLAUDE.md" && exit 1)
+          echo "Global install: OK"
+
+      - name: Run project install
+        run: bash install.sh --project-only --dir=/tmp/test-project
+
+      - name: Verify project files
+        run: |
+          BASE=/tmp/test-project
+          for cmd in start-session end-phase checkpoint add-mcp remove-mcp research new-skill; do
+            test -f "$BASE/.claude/commands/$cmd.md" || (echo "MISSING: $cmd.md" && exit 1)
+          done
+          for hook in session-start.sh pre-compact.sh context-monitor.mjs; do
+            test -f "$BASE/.claude/hooks/$hook" || (echo "MISSING: $hook" && exit 1)
+          done
+          test -f "$BASE/.claude/settings.json" || (echo "MISSING: settings.json" && exit 1)
+          test -f "$BASE/PHASES.md"             || (echo "MISSING: PHASES.md" && exit 1)
+          test -f "$BASE/SESSION_LOG.md"        || (echo "MISSING: SESSION_LOG.md" && exit 1)
+          test -f "$BASE/MEMORY.md"             || (echo "MISSING: MEMORY.md" && exit 1)
+          test -f "$BASE/.claudeignore"         || (echo "MISSING: .claudeignore" && exit 1)
+          echo "Project install: OK"
+
+      - name: Verify hooks are executable
+        run: |
+          BASE=/tmp/test-project
+          test -x "$BASE/.claude/hooks/session-start.sh"  || (echo "NOT EXECUTABLE: session-start.sh" && exit 1)
+          test -x "$BASE/.claude/hooks/pre-compact.sh"    || (echo "NOT EXECUTABLE: pre-compact.sh" && exit 1)
+          echo "Hook permissions: OK"
+
+      - name: Verify re-run is safe (no overwrites)
+        run: |
+          echo "CUSTOM_CONTENT" >> /tmp/test-project/MEMORY.md
+          bash install.sh --project-only --dir=/tmp/test-project
+          grep -q "CUSTOM_CONTENT" /tmp/test-project/MEMORY.md || (echo "MEMORY.md was overwritten" && exit 1)
+          echo "Re-run safety: OK"
+
+      - name: Run session-start hook
+        run: |
+          cd /tmp/test-project
+          bash .claude/hooks/session-start.sh
+          echo "session-start.sh: OK"
+
+      - name: Run pre-compact hook
+        run: |
+          cd /tmp/test-project
+          bash .claude/hooks/pre-compact.sh
+          test -d .claude/compact-backups || (echo "Backup dir not created" && exit 1)
+          echo "pre-compact.sh: OK"
